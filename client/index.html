@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+  <h1 id="kosasih">Kosasih</h1>
+  <!-- <h1 id="john">John Doe</h1> -->
+  <!-- <h1 id="paus">🐳</h1>   -->
+
+  <!-- <ul id="animalList"></ul> -->
+
+  <form id="createNewRepo" action="get" url="/">
+    <input type="text" id="repoName">
+    <button type="submit" value="Buat Repo Baru">Buat Repo Baru</button>
+  </form>
+
+  <ul id="repoList"></ul>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+  <script>
+    
+    $('#john').hide()
+
+    setTimeout(() => {
+      $('#john').show()
+    }, 1000)
+    
+    const animals = [ '🐳', '🐢', '🦊']
+
+    animals.forEach(animal => {
+      $('#animalList').append(`<li>${animal}</li>`)
+    })
+
+    // $('#animalList').click(function () {
+    //   alert('akulah tarzan')
+    // })
+
+    $.get('http://localhost:3000/users/repositories')
+     .done(response => {
+       console.log(response)
+       // looping untuk append data ke dom
+
+       response.forEach(datum => {
+         $('#repoList').append(`<li>${datum.full_name}</li>`)
+       })
+     })
+     .fail(response => {
+       console.log(response)
+     })
+
+     $('#createNewRepo').submit(function (event) {
+       // berhentikan bevaviour form yang normal
+       event.preventDefault()
+       // post request untuk menyimpan data repo baru
+       $.post('http://localhost:3000/users/repositories', {
+        repoName: $('#repoName').val()
+       })
+       .done(function (response) {
+         console.log(response)
+         $('#repoList').append(`<li>${response.full_name}</li>`)
+       })
+       .fail(function (err) {
+         console.log(err)
+       })
+     })
+
+  </script>
+
+</body>
+</html>
